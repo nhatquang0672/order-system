@@ -1,0 +1,771 @@
+basePath: /api
+definitions:
+  handler.cartItemRequest:
+    properties:
+      cartItem:
+        properties:
+          productid:
+            type: integer
+          quantity:
+            type: integer
+        type: object
+    type: object
+  handler.cartItemResponse:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: integer
+      product:
+        properties:
+          description:
+            type: string
+          id:
+            type: integer
+          price:
+            type: integer
+          quantity:
+            type: integer
+        type: object
+      quantity:
+        type: integer
+      totalPrice:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
+  handler.listCartItemsResponse:
+    properties:
+      cartItems:
+        items:
+          $ref: '#/definitions/handler.cartItemResponse'
+        type: array
+      totalPrice:
+        type: integer
+    type: object
+  handler.listOrderResponse:
+    properties:
+      orders:
+        items:
+          $ref: '#/definitions/handler.orderRespone'
+        type: array
+    type: object
+  handler.listProductResponse:
+    properties:
+      count:
+        type: integer
+      products:
+        items:
+          $ref: '#/definitions/handler.productResponse'
+        type: array
+    type: object
+  handler.orderItemResponse:
+    properties:
+      Price:
+        type: integer
+      createdAt:
+        type: string
+      id:
+        type: integer
+      product:
+        properties:
+          description:
+            type: string
+          id:
+            type: integer
+          price:
+            type: integer
+          quantity:
+            type: integer
+        type: object
+      quantity:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
+  handler.orderRespone:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: integer
+      items:
+        items:
+          $ref: '#/definitions/handler.orderItemResponse'
+        type: array
+      status:
+        type: string
+      totalPrice:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
+  handler.productRequest:
+    properties:
+      product:
+        properties:
+          description:
+            type: string
+          price:
+            type: integer
+          quantity:
+            type: integer
+        type: object
+    type: object
+  handler.productResponse:
+    properties:
+      createdAt:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      price:
+        type: integer
+      quantity:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
+  handler.singleCartItemResponse:
+    properties:
+      cartItem:
+        $ref: '#/definitions/handler.cartItemResponse'
+    type: object
+  handler.singleOrderResponse:
+    properties:
+      order:
+        $ref: '#/definitions/handler.orderRespone'
+    type: object
+  handler.singleProductResponse:
+    properties:
+      product:
+        $ref: '#/definitions/handler.productResponse'
+    type: object
+  handler.userLoginRequest:
+    properties:
+      user:
+        properties:
+          email:
+            type: string
+          password:
+            type: string
+        required:
+        - email
+        - password
+        type: object
+    type: object
+  handler.userResponse:
+    properties:
+      user:
+        properties:
+          email:
+            type: string
+          role:
+            type: string
+          token:
+            type: string
+          username:
+            type: string
+        type: object
+    type: object
+  handler.userUpdateRequest:
+    properties:
+      user:
+        properties:
+          email:
+            type: string
+          password:
+            type: string
+          username:
+            type: string
+        type: object
+    type: object
+  utils.Error:
+    properties:
+      errors:
+        additionalProperties: true
+        type: object
+    type: object
+info:
+  contact: {}
+  description: Order System API
+  title: Order System API
+paths:
+  /carts:
+    get:
+      consumes:
+      - application/json
+      description: Get all items in user's cart.
+      operationId: get-cart
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.listCartItemsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get cart items for user
+      tags:
+      - cart
+    post:
+      consumes:
+      - application/json
+      description: Create cart item
+      operationId: create-cart-item
+      parameters:
+      - description: Cart item
+        in: body
+        name: cartItem
+        required: true
+        schema:
+          $ref: '#/definitions/handler.cartItemRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.singleCartItemResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Create cart item
+      tags:
+      - cart
+  /carts/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete cart item
+      operationId: delete-cart-item
+      parameters:
+      - description: ID of the cart item you want to get
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete cart item
+      tags:
+      - cart
+    put:
+      consumes:
+      - application/json
+      description: Update cart item
+      operationId: update-cart-item
+      parameters:
+      - description: Cart item
+        in: body
+        name: cartItem
+        required: true
+        schema:
+          $ref: '#/definitions/handler.cartItemRequest'
+      - description: ID of the cart item you want to update
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.singleCartItemResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Update cart item
+      tags:
+      - cart
+  /orders:
+    get:
+      consumes:
+      - application/json
+      description: Get list orders
+      operationId: get-list-orders
+      parameters:
+      - description: Limit number of order returned (default is 20)
+        in: query
+        name: limit
+        type: integer
+      - description: Offset/skip number of order (default is 0)
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.listOrderResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get list orders
+      tags:
+      - order
+    post:
+      consumes:
+      - application/json
+      description: Place order
+      operationId: place-order
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.singleOrderResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Place order for user
+      tags:
+      - order
+  /orders/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get order
+      operationId: get-order
+      parameters:
+      - description: ID of the order you want to get
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.singleOrderResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get order from order id
+      tags:
+      - order
+  /products:
+    get:
+      consumes:
+      - application/json
+      description: Get most recent products globally. Use query parameters to filter
+        results. Auth is optional
+      operationId: get-products
+      parameters:
+      - description: Limit number of product returned (default is 20)
+        in: query
+        name: limit
+        type: integer
+      - description: Offset/skip number of product (default is 0)
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.listProductResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Error'
+      summary: Get recent products globally
+      tags:
+      - product
+    post:
+      consumes:
+      - application/json
+      description: Create new product
+      operationId: create
+      parameters:
+      - description: Product details to create. At least **one** field is required.
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/handler.productRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.singleProductResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Create new product
+      tags:
+      - product
+  /products/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get an product. Auth not required
+      operationId: get-product
+      parameters:
+      - description: ID of the product you want to get
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.singleProductResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Error'
+      summary: Get an product
+      tags:
+      - product
+    put:
+      consumes:
+      - application/json
+      description: Update product information from product id.
+      operationId: update
+      parameters:
+      - description: Product details to update. At least **one** field is required.
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/handler.productRequest'
+      - description: ID of the product you want to update
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.singleProductResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Update product
+      tags:
+      - product
+  /user:
+    get:
+      consumes:
+      - application/json
+      description: Gets the currently logged-in user
+      operationId: current-user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.userResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get the current user
+      tags:
+      - user
+    put:
+      consumes:
+      - application/json
+      description: Update user information for current user
+      operationId: update-user
+      parameters:
+      - description: User details to update. At least **one** field is required.
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/handler.userUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.userResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Update current user
+      tags:
+      - user
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Login for existing user
+      operationId: login
+      parameters:
+      - description: Credentials to use
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/handler.userLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.userResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/utils.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Error'
+      summary: Login for existing user
+      tags:
+      - user
+produces:
+- application/json
+schemes:
+- http
+- https
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
